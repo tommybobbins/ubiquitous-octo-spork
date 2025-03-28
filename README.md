@@ -1,8 +1,6 @@
 # ubiquitous-octo-spork
 JEMansour website
 
-## INSTALL
-
 ## Install the infrastructure for Deploying to AWS
 
 ``` 
