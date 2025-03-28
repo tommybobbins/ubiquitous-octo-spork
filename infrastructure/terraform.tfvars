@@ -1,7 +1,7 @@
-domain_name = "chegwin.org"
-github_repository = "tommybobbins/chegwin-org"
+domain_name = "jemansour.com"
+github_repository = "tommybobbins/jemansour-com"
 
 common_tags = {
-  Project   = "cheggers"
+  Project   = "jemansour"
   ManagedBy = "terraform"
 }

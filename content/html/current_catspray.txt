@@ -1,0 +1,23 @@
+Content-type: text/html
+
+<font size=+1>Environment</font></br><b>         HTTP_ACCEPT</b>: */*</br>
+<b>     HTTP_USER_AGENT</b>: curl/7.26.0</br>
+<b>         SERVER_NAME</b>: www.enjiia.com</br>
+<b>         REMOTE_ADDR</b>: 77.97.148.191</br>
+<b>     SERVER_PROTOCOL</b>: HTTP/1.1</br>
+<b>     SCRIPT_FILENAME</b>: /home/sites/enjiia/catspray/wotip.py</br>
+<b>         REMOTE_PORT</b>: 51964</br>
+<b>     SERVER_SOFTWARE</b>: Apache/2.2.16 (Debian)</br>
+<b>        SERVER_ADMIN</b>: [no address given]</br>
+<b>         SCRIPT_NAME</b>: /catspray/wotip.py</br>
+<b>    SERVER_SIGNATURE</b>: <address>Apache/2.2.16 (Debian) Server at www.enjiia.com Port 80</address>
+</br>
+<b>      REQUEST_METHOD</b>: GET</br>
+<b>           HTTP_HOST</b>: www.enjiia.com</br>
+<b>         SERVER_PORT</b>: 80</br>
+<b>   GATEWAY_INTERFACE</b>: CGI/1.1</br>
+<b>        QUERY_STRING</b>: </br>
+<b>                PATH</b>: /usr/local/bin:/usr/bin:/bin</br>
+<b>         REQUEST_URI</b>: /catspray/wotip.py</br>
+<b>         SERVER_ADDR</b>: 213.138.101.14</br>
+<b>       DOCUMENT_ROOT</b>: /home/sites/enjiia</br>

@@ -1,7 +1,7 @@
 name: Upload Website to S3
 
 on:
-  workflow_dispatch:
+  push:
     branches:
     - main
 
@@ -16,35 +16,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: true  # Fetch Hugo themes (true OR recursive)
+          submodules: recursive  # Fetch Hugo themes (true OR recursive)
           fetch-depth: 0    # Fetch all history for .GitInfo and .Lastmod
-
-      - name: Setup Hugo
-        uses: peaceiris/actions-hugo@v2
-        with:
-          hugo-version: latest
-          extended: true
-
-      - uses: actions/cache@v2
-        with:
-          path: /tmp/hugo_cache_s3
-          key: ${{ runner.os }}-hugomod-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-hugomod-
-
-
-      - name: Build
-        run: |
-             cd hugo 
-             hugo --config config.toml --minify
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: ${{ vars.AWS_REGION }}
-          role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/github-oidc-provider-aws
+          role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/${{ vars.ACTIONS_AWS_ROLE }}
           role-session-name: SyncToS3
 
       - name: Deploy static site to S3 bucket
-        run: aws s3 sync ./hugo/public/ s3://${{ vars.AWS_WWW_BUCKET_NAME }}/ --delete
-        #run: aws s3 ls s3://${{ vars.AWS_WWW_BUCKET_NAME }}/ 
+        run: aws s3 sync ./content/html/ s3://${{ vars.AWS_WWW_BUCKET_NAME }}/ 

@@ -1,6 +1,5 @@
 # Local .terraform directories
 **/.terraform/*
-**/hugo/public/*
 
 # .tfstate files
 *.tfstate
