@@ -10,7 +10,7 @@ data "aws_iam_policy_document" "s3_write_access" {
       "s3:CopyObject",
       "s3:DeleteObject"
     ]
-    resources = [aws_s3_bucket.www.arn,"${aws_s3_bucket.www.arn}/*"]
+    resources = [module.website.s3_bucket_arn,"${module.website.s3_bucket_arn}/*"]
   }
 }
 
@@ -44,4 +44,4 @@ module "github-oidc" {
 }
 
 
-# This is a test
+# # This is a test
