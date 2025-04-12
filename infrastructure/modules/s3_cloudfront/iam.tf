@@ -33,7 +33,7 @@ resource "aws_iam_policy" "s3_write_access" {
 }
 
 resource "aws_iam_policy" "cloudfront_invalidation" {
-  name   = "AllowGithubOIDCCloudFrontInvlidation"
+  name   = "AllowGithubOIDCCloudFrontInvlidation-${split(".",var.domain_name)[0]}"
   path   = "/"
   policy = data.aws_iam_policy_document.cloudfront_invalidation.json
 }
