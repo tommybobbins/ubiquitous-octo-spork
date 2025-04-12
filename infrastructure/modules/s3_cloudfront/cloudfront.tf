@@ -30,18 +30,34 @@ module "website" {
 # Cloudfront
 #############
 module "cdn" {
-  source  = "terraform-module/cloudfront/aws"
-  version = "~> 1"
+  source  = "terraform-aws-modules/cloudfront/aws"
+  version = "4.1.0"
 
   comment             = format("CloudFront Distribution For %s", local.domain_name)
   aliases             = ["${local.subdomain}.${local.domain_name}","${local.domain_name}"]
   default_root_object = "index.html"
-  
-  s3_origin_config = [{
-    # domain_name = local.s3_region_domain
-    domain_name = module.website.s3_bucket_bucket_regional_domain_name
-  }]
+  price_class = "PriceClass_100"
+  enabled = true
+   
+  # s3_origin_config = [{
+  #   domain_name = module.website.s3_bucket_website_endpoint
+  # }]
 
+  create_origin_access_identity = true
+  
+  origin_access_identities = {
+    s3_identity = "CloudFront access"
+  }
+
+  origin = {
+    s3_identity = {
+      domain_name = module.website.s3_bucket_bucket_regional_domain_name
+
+      s3_origin_config = {
+        origin_access_identity = "s3_identity"
+      }
+    }
+  }
 
   viewer_certificate = {
     acm_certificate_arn = aws_acm_certificate.ssl_certificate.arn
@@ -49,15 +65,26 @@ module "cdn" {
   }
 
   default_cache_behavior = {
-    min_ttl                    = 1000
-    default_ttl                = 1000
-    max_ttl                    = 1000
-    cookies_forward            = "none"
-    response_headers_policy_id = "Managed-SecurityHeadersPolicy"
-    headers = [
-      "Origin",
-      "Access-Control-Request-Headers",
-      "Access-Control-Request-Method"
-    ]
+    target_origin_id           = "s3_identity"
+    viewer_protocol_policy     = "allow-all"
+
+    allowed_methods = ["GET", "HEAD", "OPTIONS"]
+    cached_methods  = ["GET", "HEAD"]
+    compress        = true
+    query_string    = true
   }
+
+custom_error_response = [
+  {
+    error_code         = 403
+    response_code      = 200
+    response_page_path = "/index.html"
+  },
+  {
+    error_code         = 404
+    response_code      = 200
+    response_page_path = "/index.html"
+  }
+]
+
 }

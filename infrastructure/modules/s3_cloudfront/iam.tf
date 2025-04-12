@@ -14,10 +14,28 @@ data "aws_iam_policy_document" "s3_write_access" {
   }
 }
 
+
+data "aws_iam_policy_document" "cloudfront_invalidation" {
+  statement {
+    sid    = "AllowCloudFrontInvalidation"
+    effect = "Allow"
+    actions = [
+      "cloudfront:CreateInvalidation",
+    ]
+    resources = [module.cdn.cloudfront_distribution_arn]
+  }
+}
+
 resource "aws_iam_policy" "s3_write_access" {
   name   = "AllowWriteBucket-${split(".",var.domain_name)[0]}"
   path   = "/"
   policy = data.aws_iam_policy_document.s3_write_access.json
+}
+
+resource "aws_iam_policy" "cloudfront_invalidation" {
+  name   = "AllowGithubOIDCCloudFrontInvlidation"
+  path   = "/"
+  policy = data.aws_iam_policy_document.cloudfront_invalidation.json
 }
 
 locals {
@@ -35,11 +53,11 @@ module "github-oidc" {
  source  = "terraform-module/github-oidc-provider/aws"
  version = "~> 1"
  role_name = local.github_name
- create_oidc_provider = length(data.aws_iam_openid_connect_provider.github.arn) >= 1 ? false : true
+ create_oidc_provider = false
  create_oidc_role     = true
 
  repositories              = [var.github_repository]
- oidc_role_attach_policies = [aws_iam_policy.s3_write_access.arn]
+ oidc_role_attach_policies = [aws_iam_policy.s3_write_access.arn, aws_iam_policy.cloudfront_invalidation.arn]
 #  oidc_role_attach_policies = ["arn:aws:iam::aws:policy/AmazonS3FullAccess"]
 }
 
