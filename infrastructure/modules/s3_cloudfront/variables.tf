@@ -13,7 +13,7 @@ variable "github_repository" {
 }
 
 variable "aws_region" {
-  type = string
+  type        = string
   description = "AWS Region to create assets in"
-  default = "us-east-1"
+  default     = "us-east-1"
 }

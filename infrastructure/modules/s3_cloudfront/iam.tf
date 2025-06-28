@@ -10,7 +10,7 @@ data "aws_iam_policy_document" "s3_write_access" {
       "s3:CopyObject",
       "s3:DeleteObject"
     ]
-    resources = [module.website.s3_bucket_arn,"${module.website.s3_bucket_arn}/*"]
+    resources = [module.website.s3_bucket_arn, "${module.website.s3_bucket_arn}/*"]
   }
 }
 
@@ -27,20 +27,20 @@ data "aws_iam_policy_document" "cloudfront_invalidation" {
 }
 
 resource "aws_iam_policy" "s3_write_access" {
-  name   = "AllowWriteBucket-${split(".",var.domain_name)[0]}"
+  name   = "AllowWriteBucket-${split(".", var.domain_name)[0]}"
   path   = "/"
   policy = data.aws_iam_policy_document.s3_write_access.json
 }
 
 resource "aws_iam_policy" "cloudfront_invalidation" {
-  name   = "AllowGithubOIDCCloudFrontInvlidation-${split(".",var.domain_name)[0]}"
+  name   = "AllowGithubOIDCCloudFrontInvlidation-${split(".", var.domain_name)[0]}"
   path   = "/"
   policy = data.aws_iam_policy_document.cloudfront_invalidation.json
 }
 
 locals {
 
-github_name = replace("github-oidc-${var.domain_name}",".","-")
+  github_name = replace("github-oidc-${var.domain_name}", ".", "-")
 
 }
 
@@ -49,16 +49,16 @@ data "aws_iam_openid_connect_provider" "github" {
 }
 
 module "github-oidc" {
- oidc_provider_arn = length(data.aws_iam_openid_connect_provider.github.arn) >= 1 ? data.aws_iam_openid_connect_provider.github.arn : null
- source  = "terraform-module/github-oidc-provider/aws"
- version = "~> 1"
- role_name = local.github_name
- create_oidc_provider = false
- create_oidc_role     = true
+  oidc_provider_arn    = length(data.aws_iam_openid_connect_provider.github.arn) >= 1 ? data.aws_iam_openid_connect_provider.github.arn : null
+  source               = "terraform-module/github-oidc-provider/aws"
+  version              = "~> 1"
+  role_name            = local.github_name
+  create_oidc_provider = false
+  create_oidc_role     = true
 
- repositories              = [var.github_repository]
- oidc_role_attach_policies = [aws_iam_policy.s3_write_access.arn, aws_iam_policy.cloudfront_invalidation.arn]
-#  oidc_role_attach_policies = ["arn:aws:iam::aws:policy/AmazonS3FullAccess"]
+  repositories              = [var.github_repository]
+  oidc_role_attach_policies = [aws_iam_policy.s3_write_access.arn, aws_iam_policy.cloudfront_invalidation.arn]
+  #  oidc_role_attach_policies = ["arn:aws:iam::aws:policy/AmazonS3FullAccess"]
 }
 
 
